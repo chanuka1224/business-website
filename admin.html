@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - Premium Store</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --primary: #6366f1;
+            --primary-hover: #4f46e5;
+            --bg: #09090b;
+            --surface: #18181b;
+            --surface-hover: #27272a;
+            --border: rgba(255, 255, 255, 0.08);
+            --text: #f4f4f5;
+            --text-muted: #a1a1aa;
+            --danger: #ef4444;
+            --success: #10b981;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        /* Nav */
+        header {
+            background: rgba(9, 9, 11, 0.8);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--text);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .logo span {
+            color: var(--primary);
+        }
+
+        .nav-links a {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.95rem;
+            margin-left: 1.5rem;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: var(--text);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 3rem auto;
+            padding: 0 2rem;
+        }
+
+        /* Login Box */
+        .login-box {
+            max-width: 400px;
+            margin: 5rem auto;
+            background: var(--surface);
+            padding: 3rem 2.5rem;
+            border-radius: 16px;
+            border: 1px solid var(--border);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        }
+
+        .login-title {
+            text-align: center;
+            font-size: 1.75rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .alert {
+            padding: 1rem;
+            background: rgba(239, 68, 68, 0.1);
+            color: #fca5a5;
+            border: 1px solid rgba(239, 68, 68, 0.2);
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+            text-align: center;
+            font-size: 0.9rem;
+            display: none;
+        }
+
+        .alert.show {
+            display: block;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            background: rgba(9, 9, 11, 0.6);
+            border: 1px solid var(--border);
+            color: var(--text);
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.2);
+        }
+
+        .btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s;
+            width: 100%;
+        }
+
+        .btn:hover {
+            background: var(--primary-hover);
+        }
+
+        .btn-danger {
+            background: var(--danger);
+        }
+
+        /* Dashboard */
+        .dashboard.hidden {
+            display: none;
+        }
+
+        .panel {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .panel-header {
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+        }
+
+        @media (max-width: 768px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Drag & Drop Area */
+        .dropzone {
+            border: 2px dashed rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            padding: 2rem;
+            text-align: center;
+            background: rgba(9, 9, 11, 0.4);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .dropzone.dragover {
+            border-color: var(--primary);
+            background: rgba(99, 102, 241, 0.1);
+        }
+
+        .dropzone-text {
+            color: var(--text-muted);
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+        }
+
+        .dropzone-text span {
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        .preview-container {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            margin-top: 1rem;
+            justify-content: center;
+        }
+
+        .preview-item {
+            position: relative;
+            width: 70px;
+            height: 70px;
+            border-radius: 8px;
+            overflow: hidden;
+            border: 1px solid var(--border);
+        }
+
+        .preview-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .remove-img {
+            position: absolute;
+            top: 2px;
+            right: 2px;
+            background: var(--danger);
+            color: white;
+            border: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        /* Table */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th,
+        td {
+            text-align: left;
+            padding: 1rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        th {
+            color: var(--text-muted);
+            font-weight: 500;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+        }
+
+        .table-wrap {
+            overflow-x: auto;
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <div class="nav-container">
+            <a href="index.html" class="logo">MSTORE <span>Admin</span></a>
+            <div class="nav-links">
+                <a href="index.html">View Store</a>
+                <a href="#" id="logoutBtn" style="display:none; color:var(--danger)">Logout</a>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <!-- Auth Section -->
+        <div class="login-box" id="loginSec">
+            <h2 class="login-title">Secure Portal</h2>
+            <div class="alert" id="loginAlert">Invalid Credentials</div>
+            <form id="loginForm">
+                <div class="form-group">
+                    <label>Username</label>
+                    <input type="text" id="username" class="form-control" placeholder="user name" required>
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" id="password" class="form-control" placeholder="*********" required>
+                </div>
+                <button type="submit" class="btn">Login</button>
+            </form>
+        </div>
+
+        <!-- Dashboard Section -->
+        <div class="dashboard hidden" id="dashSec">
+
+            <div class="panel">
+                <div class="panel-header">
+                    <h2>WhatsApp Settings</h2>
+                </div>
+                <form id="waForm" style="display:flex; gap:1rem; align-items:end;">
+                    <div class="form-group" style="flex:1; margin-bottom:0;">
+                        <label>Order Number (Format: 94770000000)</label>
+                        <input type="text" id="waNum" class="form-control" required>
+                    </div>
+                    <button type="submit" class="btn" style="width:auto;">Save</button>
+                </form>
+            </div>
+
+            <div class="panel">
+                <div class="panel-header">
+                    <h2>Add Product</h2>
+                </div>
+                <form id="addProdForm">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>Product Name</label>
+                            <input type="text" id="pName" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Category</label>
+                            <input type="text" id="pCat" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Price (LKR)</label>
+                            <input type="number" id="pPrice" class="form-control" required>
+                        </div>
+                        <div class="form-group" style="grid-column: 1 / -1;">
+                            <label>Description</label>
+                            <textarea id="pDesc" class="form-control" rows="3"></textarea>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Product Images</label>
+                        <div class="dropzone" id="dz">
+                            <p class="dropzone-text">Drag & Drop images, Paste URLs below, or <span>Browse</span></p>
+                            <input type="file" id="pFile" accept="image/*" multiple style="display:none;">
+                            <input type="text" id="pUrlInput" class="form-control"
+                                placeholder="Paste single URL and press Enter...">
+                            <div class="preview-container" id="pContainer"></div>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn" style="width:auto;">Publish Product</button>
+                </form>
+            </div>
+
+            <div class="panel">
+                <div class="panel-header">
+                    <h2>Inventory Management</h2>
+                </div>
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Photo</th>
+                                <th>Name</th>
+                                <th>Category</th>
+                                <th>Price</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="inventoryBody">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        // --- STORE LOGIC (Duplicate to keep independent) ---
+        const defaultProducts = [
+            {
+                id: 1,
+                name: "Sony WH-1000XM5 Wireless Headphones",
+                category: "Electronics",
+                price: "115000",
+                images: [
+                    "https://images.unsplash.com/photo-1618366712010-f4ae9c647dcb?w=800&q=80",
+                    "https://images.unsplash.com/photo-1484704849700-f032a568e944?w=800&q=80"
+                ],
+                description: "Industry leading noise canceling with two processors control 8 microphones for unprecedented noise cancellation."
+            },
+            {
+                id: 2,
+                name: "Minimalist Smart Watch",
+                category: "Wearables",
+                price: "24500",
+                images: [
+                    "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=800&q=80",
+                    "https://images.unsplash.com/photo-1508685096489-7aacd43bd3b1?w=800&q=80"
+                ],
+                description: "Advanced health monitoring, fitness tracking, and a beautiful Always-On Retina display."
+            },
+            {
+                id: 3,
+                name: "Classic Leather Backpack",
+                category: "Accessories",
+                price: "18000",
+                images: [
+                    "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=800&q=80",
+                    "https://images.unsplash.com/photo-1622560480605-d83c853bc5c3?w=800&q=80"
+                ],
+                description: "Genuine full-grain leather backpack. Perfect for daily commute and carrying your 15-inch laptop securely."
+            }
+        ];
+
+        function getProducts() {
+            const raw = localStorage.getItem('products');
+            if (!raw) {
+                localStorage.setItem('products', JSON.stringify(defaultProducts));
+                return defaultProducts;
+            }
+            let products = JSON.parse(raw);
+            return products.map(p => {
+                if (p.image && !p.images) { p.images = [p.image]; delete p.image; }
+                return p;
+            });
+        }
+
+        function saveProducts(products) {
+            localStorage.setItem('products', JSON.stringify(products));
+        }
+
+        function getWhatsAppNumber() {
+            return localStorage.getItem('whatsapp_number') || "94700000000";
+        }
+
+        // --- ADMIN LOGIC ---
+        document.addEventListener('DOMContentLoaded', () => {
+            const isLog = sessionStorage.getItem('auth') === 'true';
+
+            const lSec = document.getElementById('loginSec');
+            const dSec = document.getElementById('dashSec');
+            const logout = document.getElementById('logoutBtn');
+            const lAlert = document.getElementById('loginAlert');
+
+            if (isLog) showDash();
+
+            // Auth
+            document.getElementById('loginForm').onsubmit = (e) => {
+                e.preventDefault();
+                const u = document.getElementById('username').value;
+                const p = document.getElementById('password').value;
+                if (u === "USER 2003" && p === "Abc@1234") {
+                    sessionStorage.setItem('auth', 'true');
+                    showDash();
+                } else {
+                    lAlert.classList.add('show');
+                }
+            };
+
+            logout.onclick = (e) => {
+                e.preventDefault();
+                sessionStorage.removeItem('auth');
+                window.location.reload();
+            };
+
+            function showDash() {
+                lSec.style.display = 'none';
+                dSec.classList.remove('hidden');
+                logout.style.display = 'inline-block';
+                initDash();
+            }
+
+            function initDash() {
+                let products = getProducts();
+
+                // Settings
+                document.getElementById('waNum').value = getWhatsAppNumber();
+                document.getElementById('waForm').onsubmit = (e) => {
+                    e.preventDefault();
+                    localStorage.setItem('whatsapp_number', document.getElementById('waNum').value);
+                    alert('Saved!');
+                };
+
+                // Dropzone
+                let upl = [];
+                const dz = document.getElementById('dz');
+                const pf = document.getElementById('pFile');
+                const pu = document.getElementById('pUrlInput');
+                const pc = document.getElementById('pContainer');
+
+                function renderThumbs() {
+                    pc.innerHTML = '';
+                    upl.forEach((url, i) => {
+                        const div = document.createElement('div');
+                        div.className = 'preview-item';
+                        div.innerHTML = `
+                            <img src="${url}">
+                            <button class="remove-img" type="button" onclick="event.stopPropagation(); removeImg(${i})">&times;</button>
+                        `;
+                        pc.appendChild(div);
+                    });
+                }
+
+                window.removeImg = (i) => { upl.splice(i, 1); renderThumbs(); };
+
+                dz.onclick = (e) => { if (e.target !== pu && e.target !== pc && !pc.contains(e.target)) pf.click(); };
+                dz.ondragover = (e) => { e.preventDefault(); dz.classList.add('dragover'); };
+                dz.ondragleave = () => dz.classList.remove('dragover');
+                dz.ondrop = (e) => {
+                    e.preventDefault();
+                    dz.classList.remove('dragover');
+                    handleF(e.dataTransfer.files);
+                };
+                pf.onchange = () => handleF(pf.files);
+                pu.onkeydown = (e) => {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        if (pu.value.trim()) { upl.push(pu.value.trim()); pu.value = ''; renderThumbs(); }
+                    }
+                };
+
+                function handleF(files) {
+                    Array.from(files).forEach(f => {
+                        if (f.type.startsWith('image/')) {
+                            const r = new FileReader();
+                            r.onload = (e) => { upl.push(e.target.result); renderThumbs(); };
+                            r.readAsDataURL(f);
+                        }
+                    });
+                    pf.value = '';
+                }
+
+                // Add Prod
+                document.getElementById('addProdForm').onsubmit = (e) => {
+                    e.preventDefault();
+                    if (!upl.length) return alert('Add at least one image!');
+
+                    products.push({
+                        id: Date.now(),
+                        name: document.getElementById('pName').value,
+                        category: document.getElementById('pCat').value,
+                        price: document.getElementById('pPrice').value,
+                        images: [...upl],
+                        description: document.getElementById('pDesc').value
+                    });
+                    saveProducts(products);
+                    renderTable();
+                    e.target.reset();
+                    upl = [];
+                    renderThumbs();
+                    alert('Added successfully!');
+                };
+
+                // Table
+                window.delProd = (id) => {
+                    if (confirm('Are you sure?')) {
+                        products = products.filter(p => p.id !== id);
+                        saveProducts(products);
+                        renderTable();
+                    }
+                };
+
+                function renderTable() {
+                    const tb = document.getElementById('inventoryBody');
+                    tb.innerHTML = '';
+                    products.forEach(p => {
+                        const tr = document.createElement('tr');
+                        const img = p.images && p.images.length ? p.images[0] : '';
+                        tr.innerHTML = `
+                            <td><img src="${img}" style="width:40px;height:40px;border-radius:4px;object-fit:cover;"></td>
+                            <td style="font-weight:500;">${p.name}</td>
+                            <td><span style="font-size:0.8rem;background:rgba(255,255,255,0.1);padding:0.2rem 0.5rem;border-radius:100px;">${p.category}</span></td>
+                            <td>LKR ${Number(p.price).toLocaleString()}</td>
+                            <td><button onclick="delProd(${p.id})" class="btn" style="background:var(--danger);padding:0.4rem 0.8rem;width:auto;">Remove</button></td>
+                        `;
+                        tb.appendChild(tr);
+                    });
+                }
+                renderTable();
+            }
+        });
+    </script>
+</body>
+
+</html>
